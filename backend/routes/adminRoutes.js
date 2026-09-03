@@ -1,48 +1,27 @@
 const express = require("express");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
+const {
+    loginAdmin,
+    getDashboard,
+    getUsers,
+    deleteUser,
+    getCourses,
+    createCourse,
+    updateCourse,
+    deleteCourse
+} = require("../controllers/adminController");
 
 const router = express.Router();
 
-const {
-    loginAdmin
-} = require("../controllers/adminController");
-
-const {
-    protect,
-    adminOnly
-} = require("../middleware/authMiddleware");
-
-const {
-    createCourse
-} = require("../controllers/courseController");
-
-
-// Admin login
 router.post("/login", loginAdmin);
 
-
-// Admin dashboard
-router.get(
-    "/dashboard",
-    protect,
-    adminOnly,
-    (req, res) => {
-
-        res.json({
-            message: "Welcome to Admin Dashboard",
-            admin: req.user
-        });
-
-    }
-);
-
-
-// Create course
-router.post(
-    "/courses",
-    protect,
-    adminOnly,
-    createCourse
-);
-
+router.use(protect, adminOnly);
+router.get("/dashboard", getDashboard);
+router.get("/users", getUsers);
+router.delete("/users/:id", deleteUser);
+router.get("/courses", getCourses);
+router.post("/courses", createCourse);
+router.put("/courses/:id", updateCourse);
+router.delete("/courses/:id", deleteCourse);
 
 module.exports = router;
