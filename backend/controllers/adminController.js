@@ -1,7 +1,7 @@
 const Admin = require("../models/Admin");
 const User = require("../models/User");
 const Course = require("../models/Course");
-const Recommendation = require("../models/Recommendation");
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -43,15 +43,34 @@ const loginAdmin = async (req, res) => {
 
 const getDashboard = async (req, res) => {
     try {
-        const [users, courses, recommendations, recentUsers, recentCourses] = await Promise.all([
-            User.countDocuments(), Course.countDocuments(), Recommendation.countDocuments(),
-            User.find().select("name email skills careerGoal experienceLevel createdAt").sort({ createdAt: -1 }).limit(5),
-            Course.find().select("title category level duration createdAt").sort({ createdAt: -1 }).limit(5)
+        const [users, courses, recentUsers, recentCourses] = await Promise.all([
+            User.countDocuments(),
+            Course.countDocuments(),
+            User.find()
+                .select("name email skills careerGoal experienceLevel createdAt")
+                .sort({ createdAt: -1 })
+                .limit(5),
+            Course.find()
+                .select("title category level duration createdAt")
+                .sort({ createdAt: -1 })
+                .limit(5)
         ]);
-        res.json({ summary: { users, courses, recommendations }, recentUsers, recentCourses });
+
+        res.json({
+            summary: {
+                users,
+                courses,
+                recommendations: 0
+            },
+            recentUsers,
+            recentCourses
+        });
     } catch (error) {
         console.error("Admin dashboard error:", error);
-        res.status(500).json({ message: "Could not load dashboard data" });
+
+        res.status(500).json({
+            message: "Could not load dashboard data"
+        });
     }
 };
 

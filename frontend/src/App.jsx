@@ -505,26 +505,25 @@ if (!loggedIn) {
             <p className="switch-auth">
 
               Don't have an account?
+          <button
+            type="button"
+            onClick={() => {
+              setIsRegister(true);
+              setError("");
+              setSuccess("");
+            }}
+          >
+            Register
+          </button>
 
-              <button
-                type="button"
-                onClick={() => {
+        </p>
 
-                  setIsRegister(true);
-                  setError("");
-                  setSuccess("");
+        <p className="admin-access">
+          Are you an administrator? <a href="/admin">Admin login</a>
+        </p>
 
-                }}
-              >
-                Register
-              </button>
-
-            </p>
-
-          </>
-
-        )}
-
+      </>
+    )}
 
         {/* ERROR */}
 
